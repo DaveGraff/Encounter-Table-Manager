@@ -5,6 +5,8 @@
  */
 package encounter.tables;
 
+import java.util.Random;
+
 /**
  *
  * @author David
@@ -48,4 +50,36 @@ public class Monster {
     public String getDescription() {return description;}
     public void setDescription(String description) {this.description = description;}
     
+    /*
+    Internal roll method
+    */
+    private int roll(int totalRolls, int rollSize){
+        Random rand = new Random();
+        int total = 0;
+        for(int i = 0; i < totalRolls; i++)
+            total += rand.nextInt(rollSize) + 1;
+        return total;
+    }
+    
+    /*
+    Internal roll for hp & appearing
+    */
+    private int numSet(int dice, int diceType, int diceMod){
+        return roll(dice, diceType) + diceMod;
+    }
+    
+    /*
+    Public return for any given roll of a monster
+    */
+    public String rollMonster(){
+        String data = "".concat(name + "\n");
+        int appearing = numSet(numDice, numDiceRoll, numMod);
+        String hp = "";
+        for(int i = 0; i < appearing; i++){
+            hp = hp.concat(" " + Integer.toString(numSet(hpNum, hpDice, hpMod)));
+        }
+        data = data.concat(hp + "\n");
+        data = data.concat(description);
+        return data;
+    }
 }
