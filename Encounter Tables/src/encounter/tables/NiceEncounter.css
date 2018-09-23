@@ -1,0 +1,14 @@
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Sep 23, 2018, 10:50:54 AM
+    Author     : david
+*/
+
+HBox, VBox {
+    -fx-spacing: 5;
+    -fx-padding: 5;
+}

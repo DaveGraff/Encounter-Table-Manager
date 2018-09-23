@@ -35,7 +35,7 @@ public class EncounterTables extends Application {
         root.getChildren().add(btn);
         
         Scene scene = new Scene(root, 300, 250);
-        
+        scene.getStylesheets().add(this.getClass().getResource("NiceEncounter.css").toExternalForm());
         primaryStage.setTitle("Hello World!");
         primaryStage.setScene(scene);
         primaryStage.show();
