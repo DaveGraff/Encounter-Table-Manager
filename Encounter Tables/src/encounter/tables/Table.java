@@ -6,14 +6,26 @@
 package encounter.tables;
 
 import java.util.Random;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 
 /**
- *
+ *8
  * @author David
  */
 public class Table {
-    private Monster[] table = new Monster[19];
-    private int monsterNum = 0;//number of monsters currently in the table 
+    private String name;
+    private Monster[] table;
+    private int monsterNum;//number of monsters currently in the table 
+    
+    public Table(String n){
+        name = n;
+        table = new Monster[19];
+        monsterNum = 0;
+    }
     
     /*
     Returns the user expected index, returns null if
@@ -52,6 +64,7 @@ public class Table {
         index = index - 2;
         if(index > 1 && index < 21)
             table[index] = input;
+        monsterNum++;
     }
     
     /*
@@ -63,8 +76,41 @@ public class Table {
         if (index > 1 && index < 21){
             Monster temp = table[index];
             table[index] = null;
+            if (temp != null)
+                monsterNum--;
             return temp;
         }
         else return null;
+    }
+
+    /*
+    JavaFX view of the table with options & slider *ooh*
+    */
+    public ScrollPane tableView(){
+        //For each Monster: Index, Add, Remove, Edit, Make Unique
+        VBox innerPane = new VBox();
+        for(int i = 0; i < 19; i++){
+            final int temp = i + 2;
+            Label index = new Label(Integer.toString(i));
+            Button add = new Button("Add");
+            add.setOnAction(e -> {
+                Monster t = new Monster();
+                t.editMonster();
+                addMonster(t, temp-2);
+            });
+            Button remove = new Button("Remove");
+            remove.setOnAction(e -> removeMonster(temp-2));
+            Button edit = new Button("Edit");
+            edit.setOnAction(e -> {
+                Monster t = getMonster(temp);
+                t.editMonster();
+            });
+            //Implement make unique later?
+            HBox row = new HBox(index, add, remove, edit);
+            innerPane.getChildren().add(row);
+        }
+        
+        ScrollPane viewer = new ScrollPane(innerPane);        
+        return viewer;
     }
 }

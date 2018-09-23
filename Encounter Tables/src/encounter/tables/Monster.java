@@ -6,6 +6,7 @@
 package encounter.tables;
 
 import java.util.Random;
+import javafx.stage.Stage;
 
 /**
  *
@@ -28,6 +29,11 @@ public class Monster {
         this.numDiceRoll = numDiceRoll;
         this.numMod = numMod;
         this.description = description;
+    }
+    
+    //For Opening a stats screen
+    public Monster(){
+        
     }
     
     //Getters & Setters
@@ -81,5 +87,15 @@ public class Monster {
         data = data.concat(hp + "\n");
         data = data.concat(description);
         return data;
+    }
+    /*
+    Creates screen to create and edit monsters
+    A new monster should be created first, and then edited
+    */
+    public Stage editMonster(){
+        Stage editStage = new Stage();
+        
+        
+        return editStage;
     }
 }
