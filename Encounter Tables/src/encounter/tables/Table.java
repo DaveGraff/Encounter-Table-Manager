@@ -27,6 +27,13 @@ public class Table {
         monsterNum = 0;
     }
     
+    //Getters & setters
+    public String getName(){
+        return name;
+    }
+    public void setName(String n){
+        name = n;
+    }
     /*
     Returns the user expected index, returns null if
     out of bounds or space is empty
