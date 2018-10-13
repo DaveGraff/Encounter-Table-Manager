@@ -40,6 +40,9 @@ public class MonsterPage {
             thisScreen.getChildren().add(row);
         });
         Button add = new Button("Add Monster");
+        add.setOnAction(e -> {
+            addMonster();
+            render();});
         ToolBar toolbar = new ToolBar(add);
         thisScreen.getChildren().add(toolbar);
         return thisScreen;
@@ -49,7 +52,7 @@ public class MonsterPage {
     Edits the stats of a given monster, saves after
     */
     public void editMonster(Monster m){
-        
+        m.editMonster();
     }
     
     /*
@@ -64,7 +67,8 @@ public class MonsterPage {
     /*
     
     */
-    public void addMonster(Monster m){
-        
+    public void addMonster(){
+        Monster temp = new Monster();
+        temp.editMonster();
     }
 }

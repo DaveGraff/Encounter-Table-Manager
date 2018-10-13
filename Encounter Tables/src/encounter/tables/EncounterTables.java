@@ -60,6 +60,9 @@ public class EncounterTables extends Application {
         launch(args);
     }
     
+    /*
+    Renders the main page
+    */
     private VBox render(){
         Button roll = new Button("Roll!");
         TextArea result = new TextArea();

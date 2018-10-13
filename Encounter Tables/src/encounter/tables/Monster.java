@@ -5,16 +5,25 @@
  */
 package encounter.tables;
 
+import java.io.Serializable;
 import java.util.Random;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ToolBar;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 /**
  *
  * @author David
  */
-public class Monster {
+public class Monster implements Serializable{
     private String name;
-    private int specialHP;          //null by default, for monsters w/ fixed HP values
+    private int specialHP;          //-1 by default, for monsters w/ fixed HP values
     private int hpMod;              //added after rolls, default 0
     private int hpDice;             //Dice type, default 8
     private int hpNum;              // # of dice to be rolled
@@ -33,7 +42,15 @@ public class Monster {
     
     //For Opening a stats screen
     public Monster(){
-        
+        name = "name";
+        specialHP = -1;
+        hpMod = 0;
+        hpDice = 8;
+        hpNum = 3;
+        numDice = 4;
+        numDiceRoll = 7;
+        numMod = 0;
+        description = "description";
     }
     
     //Getters & Setters
@@ -82,20 +99,51 @@ public class Monster {
         int appearing = numSet(numDice, numDiceRoll, numMod);
         String hp = "";
         for(int i = 0; i < appearing; i++){
-            hp = hp.concat(" " + Integer.toString(numSet(hpNum, hpDice, hpMod)));
+            if(specialHP == -1)
+                hp = hp.concat(" " + Integer.toString(numSet(hpNum, hpDice, hpMod)));
+            else hp = Integer.toString(specialHP);
         }
         data = data.concat(hp + "\n");
         data = data.concat(description);
         return data;
     }
+    
     /*
     Creates screen to create and edit monsters
     A new monster should be created first, and then edited
     */
-    public Stage editMonster(){
+    public void editMonster(){
         Stage editStage = new Stage();
+        editStage.setTitle("Edit Monster: " + name);
+        TextField nameField = new TextField(name); nameField.setMaxWidth(200);
+        TextField specHPField = new TextField(Integer.toString(specialHP));
+        TextField hpModField = new TextField(Integer.toString(hpMod));
+        TextField hpDiceField = new TextField(Integer.toString(hpDice));
+        TextField hpNumField = new TextField(Integer.toString(hpNum));
+        TextField numDiceField = new TextField(Integer.toString(numDice));
+        TextField numDiceRollField = new TextField(Integer.toString(numDiceRoll));
+        TextField numModField = new TextField(Integer.toString(numMod));
+        TextArea descriptionField = new TextArea(description);
         
+        VBox fields = new VBox(nameField, new HBox(new Label("Special HP"), specHPField));
+        fields.getChildren().add(new HBox(new Label("HP Die Type"), hpDiceField));
+        fields.getChildren().add(new HBox(new Label("# of Die to be Rolled"), hpNumField));
+        fields.getChildren().add(new HBox(new Label("HP Modifier"), hpModField));
+        fields.getChildren().add(new HBox(new Label("# Appearing Die Type"), numDiceField));
+        fields.getChildren().add(new HBox(new Label("# of Die to be Rolled"), numDiceRollField));
+        fields.getChildren().add(new HBox(new Label("# Appearing Modifier"), numModField));
+        fields.getChildren().add(descriptionField);
         
-        return editStage;
+        Button cancel = new Button("Cancel");cancel.setCancelButton(true);
+        cancel.setOnAction(e -> editStage.close());
+        Button save = new Button("Save");save.setDefaultButton(true);
+        ToolBar toolbar = new ToolBar(save, cancel);
+        
+        VBox container = new VBox(fields, toolbar);
+        
+        Scene scene = new Scene(container);
+        scene.getStylesheets().add(this.getClass().getResource("NiceEncounter.css").toExternalForm());
+        editStage.setScene(scene);
+        editStage.showAndWait();
     }
 }

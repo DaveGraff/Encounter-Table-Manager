@@ -5,6 +5,7 @@
  */
 package encounter.tables;
 
+import java.io.Serializable;
 import java.util.Random;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -16,7 +17,7 @@ import javafx.scene.layout.VBox;
  *8
  * @author David
  */
-public class Table {
+public class Table implements Serializable{
     private String name;
     private Monster[] table;
     private int monsterNum;//number of monsters currently in the table 
