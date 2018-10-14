@@ -5,6 +5,9 @@
  */
 package encounter.tables;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -21,17 +24,20 @@ import javafx.stage.Stage;
  * @author david
  */
 public class TableView {
-    private VBox vbox;
     private ArrayList<Table> tables;
-    public TableView(ArrayList<Table> tables){
+    private VBox thisPage;
+    
+    public TableView(ArrayList<Table> tables, VBox page){
         this.tables = tables;
+        thisPage = page;
     }
     
     /*
     Displays TableView page
     */
     public VBox render(){
-        VBox innerpane = new VBox();
+        thisPage.getChildren().clear();
+        //VBox innerpane = new VBox();
         for(Table table: tables){
             Label name = new Label(table.getName());
             Button edit = new Button("Edit");
@@ -39,22 +45,42 @@ public class TableView {
             Button remove = new Button("Remove");
             remove.setOnAction(e -> remove(table));
             HBox row = new HBox(name, edit, remove);
-            innerpane.getChildren().add(row);
+            thisPage.getChildren().add(row);
         }
         
         Button addTable = new Button("Add Table");
         addTable.setOnAction(e -> add());
         ToolBar toolbar = new ToolBar(addTable);
-        VBox newVBox = new VBox(innerpane, toolbar);
-        return newVBox;
+        
+        thisPage.getChildren().add(toolbar);
+        return thisPage;
     }
     
     /*
     Bring up separate edit window
     */
     private void edit(Table table){
-        
+        Stage viewStage = new Stage();
         ScrollPane pane = table.tableView();
+        pane.setMaxHeight(500);
+        pane.setMinWidth(350);
+        
+        Button save = new Button("Save");save.setDefaultButton(true);
+        save.setOnAction(e ->{
+            save();
+            render();
+            viewStage.close();
+        });
+        Button cancel = new Button("Cancel");cancel.setCancelButton(true);
+        cancel.setOnAction(e -> viewStage.close());
+        ToolBar toolbar = new ToolBar(save, cancel);
+        VBox container = new VBox(pane, toolbar);
+        
+        Scene scene = new Scene(container);
+        scene.getStylesheets().add(this.getClass().getResource("NiceEncounter.css").toExternalForm());
+        
+        viewStage.setScene(scene);
+        viewStage.showAndWait();
         render();
     }
     
@@ -64,6 +90,7 @@ public class TableView {
     private void remove(Table table){
         tables.remove(table);
         render();
+        save();
     }
     
     /*
@@ -79,6 +106,8 @@ public class TableView {
         continueButton.setOnAction(e -> {
             Table temp = new Table(name.getText());
             edit(temp);
+            tables.add(temp);
+            save();
             newStage.close();
         });
         Scene newScene = new Scene(root);
@@ -86,5 +115,17 @@ public class TableView {
         newStage.setScene(newScene);
         newStage.showAndWait();
         render();
+    }
+    
+    private void save(){
+        try{
+            FileOutputStream fos = new FileOutputStream(new File("Tables.txt"));
+            ObjectOutputStream writer = new ObjectOutputStream(fos);
+            
+            writer.writeObject(tables);
+            
+            writer.close();
+            fos.close();
+        } catch(Exception e){}//Should never happen
     }
 }

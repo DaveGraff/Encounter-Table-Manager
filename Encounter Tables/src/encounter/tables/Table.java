@@ -32,6 +32,7 @@ public class Table implements Serializable{
     public String getName(){
         return name;
     }
+    
     public void setName(String n){
         name = n;
     }
@@ -99,26 +100,44 @@ public class Table implements Serializable{
         VBox innerPane = new VBox();
         for(int i = 0; i < 19; i++){
             final int temp = i + 2;
-            Label index = new Label(Integer.toString(i));
+            boolean isNull = false;
+            if (table[i] == null)
+                isNull = true;
+            Label mName;
+            if (isNull)
+                mName = new Label("EMPTY");
+            else
+                mName = new Label(table[i].getName());
+            mName.setText(mName.getText() + "\t");//Makes spacing nicer
+            Label index = new Label(Integer.toString(temp) + '\t');
             Button add = new Button("Add");
             add.setOnAction(e -> {
                 Monster t = new Monster();
                 t.editMonster();
                 addMonster(t, temp-2);
+                tableView();
             });
-            Button remove = new Button("Remove");
-            remove.setOnAction(e -> removeMonster(temp-2));
-            Button edit = new Button("Edit");
-            edit.setOnAction(e -> {
-                Monster t = getMonster(temp);
-                t.editMonster();
-            });
+            HBox row = new HBox(index, mName, add);
+            if (!isNull){
+                Button remove = new Button("Remove");
+                remove.setOnAction(e -> {
+                    removeMonster(temp-2);
+                    tableView();
+                });
+                
+                Button edit = new Button("Edit");
+                edit.setOnAction(e -> {
+                    Monster t = getMonster(temp);
+                    t.editMonster();
+                    tableView();
+                });
+                row.getChildren().addAll(edit, remove);
+            }
             //Implement make unique later?
-            HBox row = new HBox(index, add, remove, edit);
-            innerPane.getChildren().add(row);
+            innerPane.getChildren().addAll(row);
         }
         
-        ScrollPane viewer = new ScrollPane(innerPane);        
+        ScrollPane viewer = new ScrollPane(innerPane);
         return viewer;
     }
 }

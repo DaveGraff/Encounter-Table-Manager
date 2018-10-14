@@ -5,6 +5,9 @@
  */
 package encounter.tables;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -17,13 +20,16 @@ import javafx.scene.layout.VBox;
  * @author david
  */
 public class MonsterPage {
-    ArrayList<Monster> monsterList;
-    public MonsterPage(ArrayList<Monster> m){
+    private ArrayList<Monster> monsterList;
+    private VBox thisPage;
+    
+    public MonsterPage(ArrayList<Monster> m, VBox changeableSpace){
         monsterList = m;
+        thisPage = changeableSpace;
     }
     
     public VBox render(){
-        final VBox thisScreen = new VBox();
+        thisPage.getChildren().clear();
         monsterList.forEach(e -> {
             Label name = new Label(e.getName());
             Button edit = new Button("Edit");
@@ -37,15 +43,15 @@ public class MonsterPage {
                 render();
             });
             HBox row = new HBox(name, edit, remove);
-            thisScreen.getChildren().add(row);
+            thisPage.getChildren().add(row);
         });
         Button add = new Button("Add Monster");
         add.setOnAction(e -> {
             addMonster();
             render();});
         ToolBar toolbar = new ToolBar(add);
-        thisScreen.getChildren().add(toolbar);
-        return thisScreen;
+        thisPage.getChildren().add(toolbar);
+        return thisPage;
     }
     
     /*
@@ -60,7 +66,8 @@ public class MonsterPage {
     Checks for certainty & updates .ser file
     */
     public Monster removeMonster(Monster m){
-        
+        monsterList.remove(m);
+        save();
         return m;
     }
     
@@ -70,5 +77,19 @@ public class MonsterPage {
     public void addMonster(){
         Monster temp = new Monster();
         temp.editMonster();
+        monsterList.add(temp);
+        save();
+    }
+    
+    private void save(){
+        try{
+            FileOutputStream fos = new FileOutputStream(new File("Monster_List.txt"));
+            ObjectOutputStream writer = new ObjectOutputStream(fos);
+            
+            writer.writeObject(monsterList);
+            
+            writer.close();
+            fos.close();
+        } catch(Exception e){}//Should never happen
     }
 }

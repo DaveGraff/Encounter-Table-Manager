@@ -125,18 +125,40 @@ public class Monster implements Serializable{
         TextField numModField = new TextField(Integer.toString(numMod));
         TextArea descriptionField = new TextArea(description);
         
-        VBox fields = new VBox(nameField, new HBox(new Label("Special HP"), specHPField));
-        fields.getChildren().add(new HBox(new Label("HP Die Type"), hpDiceField));
-        fields.getChildren().add(new HBox(new Label("# of Die to be Rolled"), hpNumField));
-        fields.getChildren().add(new HBox(new Label("HP Modifier"), hpModField));
-        fields.getChildren().add(new HBox(new Label("# Appearing Die Type"), numDiceField));
-        fields.getChildren().add(new HBox(new Label("# of Die to be Rolled"), numDiceRollField));
-        fields.getChildren().add(new HBox(new Label("# Appearing Modifier"), numModField));
+        VBox fields = new VBox(nameField, new HBox(new Label("Special HP\t\t\t"), specHPField));
+        fields.getChildren().add(new HBox(new Label("HP Die Type\t\t\t"), hpDiceField));
+        fields.getChildren().add(new HBox(new Label("# of Die to be Rolled\t"), hpNumField));
+        fields.getChildren().add(new HBox(new Label("HP Modifier\t\t\t"), hpModField));
+        fields.getChildren().add(new HBox(new Label("# Appearing Die Type\t"), numDiceField));
+        fields.getChildren().add(new HBox(new Label("# of Die to be Rolled\t"), numDiceRollField));
+        fields.getChildren().add(new HBox(new Label("# Appearing Modifier\t"), numModField));
         fields.getChildren().add(descriptionField);
         
         Button cancel = new Button("Cancel");cancel.setCancelButton(true);
         cancel.setOnAction(e -> editStage.close());
         Button save = new Button("Save");save.setDefaultButton(true);
+        save.setOnAction(e -> {
+            try{
+                specialHP = Integer.parseInt(specHPField.getText());
+                hpDice = Integer.parseInt(hpDiceField.getText());
+                hpNum = Integer.parseInt(hpNumField.getText());
+                hpMod = Integer.parseInt(hpModField.getText());
+                numDice = Integer.parseInt(numDiceField.getText());
+                numDiceRoll = Integer.parseInt(numDiceRollField.getText());
+                numMod = Integer.parseInt(numModField.getText());
+                name = nameField.getText();
+                description = descriptionField.getText();
+                editStage.close();
+            } catch(NumberFormatException x){
+                Button ok = new Button("OK");ok.setDefaultButton(true);
+                Stage warning = new Stage(); warning.setTitle("Error");
+                Scene scene = new Scene(new VBox(new Label("Error: # Appearing & HP fields only accept integers"), ok));
+                scene.getStylesheets().add(this.getClass().getResource("NiceEncounter.css").toExternalForm());
+                warning.setScene(scene);
+                ok.setOnAction(z -> warning.close());
+                warning.showAndWait();
+            }
+        });
         ToolBar toolbar = new ToolBar(save, cancel);
         
         VBox container = new VBox(fields, toolbar);
