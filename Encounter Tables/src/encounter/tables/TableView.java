@@ -25,11 +25,13 @@ import javafx.stage.Stage;
  */
 public class TableView {
     private ArrayList<Table> tables;
+    private ArrayList<Monster> monsters;
     private VBox thisPage;
     
-    public TableView(ArrayList<Table> tables, VBox page){
+    public TableView(ArrayList<Table> tables, VBox page, ArrayList<Monster> m){
         this.tables = tables;
         thisPage = page;
+        monsters = m;
     }
     
     /*
@@ -37,14 +39,19 @@ public class TableView {
     */
     public VBox render(){
         thisPage.getChildren().clear();
-        //VBox innerpane = new VBox();
         for(Table table: tables){
             Label name = new Label(table.getName());
+            Button changeName = new Button("Change Name");
+            changeName.setOnAction(e -> {
+                changeName(table);
+                render();
+                save();
+            });
             Button edit = new Button("Edit");
             edit.setOnAction(e -> edit(table));
             Button remove = new Button("Remove");
             remove.setOnAction(e -> remove(table));
-            HBox row = new HBox(name, edit, remove);
+            HBox row = new HBox(name, changeName, edit, remove);
             thisPage.getChildren().add(row);
         }
         
@@ -60,8 +67,11 @@ public class TableView {
     Bring up separate edit window
     */
     private void edit(Table table){
+        final Table backup = table; //In case of cancel
+        
         Stage viewStage = new Stage();
-        ScrollPane pane = table.tableView();
+        viewStage.setTitle(table.getName());
+        ScrollPane pane = table.tableView(monsters);
         pane.setMaxHeight(500);
         pane.setMinWidth(350);
         
@@ -72,7 +82,10 @@ public class TableView {
             viewStage.close();
         });
         Button cancel = new Button("Cancel");cancel.setCancelButton(true);
-        cancel.setOnAction(e -> viewStage.close());
+        cancel.setOnAction(e -> {
+            viewStage.close();
+            
+        });
         ToolBar toolbar = new ToolBar(save, cancel);
         VBox container = new VBox(pane, toolbar);
         
@@ -97,24 +110,35 @@ public class TableView {
     Creates a new table & puts in settings w/ edit
     */
     private void add(){
+        Table temp = new Table();
+        if(changeName(temp) != null){
+            edit(temp);
+            tables.add(temp);
+            render();
+            save();
+        }
+    }
+    
+    private String changeName(Table table){
         Stage newStage = new Stage();
-        TextField name = new TextField("Enter Name");
+        String currentName;
+        if (table.getName() == null)
+            currentName = "";
+        else currentName = table.getName();
+        TextField name = new TextField(currentName);
         Button cancel = new Button("Cancel");cancel.setCancelButton(true);
         Button continueButton = new Button("Continue");continueButton.setDefaultButton(true);
         VBox root = new VBox(name, new HBox(cancel, continueButton));
         cancel.setOnAction(e -> newStage.close());
         continueButton.setOnAction(e -> {
-            Table temp = new Table(name.getText());
-            edit(temp);
-            tables.add(temp);
-            save();
+            table.setName(name.getText());
             newStage.close();
         });
         Scene newScene = new Scene(root);
         newScene.getStylesheets().add(this.getClass().getResource("NiceEncounter.css").toExternalForm());
         newStage.setScene(newScene);
         newStage.showAndWait();
-        render();
+        return table.getName();
     }
     
     private void save(){

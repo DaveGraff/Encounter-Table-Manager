@@ -6,24 +6,34 @@
 package encounter.tables;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Random;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 /**
  *8
  * @author David
  */
 public class Table implements Serializable{
-    private String name;
+    private String name = null;
     private Monster[] table;
     private int monsterNum;//number of monsters currently in the table 
+    private ScrollPane tableView = new ScrollPane();
+    private Monster selectedMonster = null;
     
     public Table(String n){
         name = n;
+        table = new Monster[19];
+        monsterNum = 0;
+    }
+    
+    public Table(){
         table = new Monster[19];
         monsterNum = 0;
     }
@@ -71,7 +81,7 @@ public class Table implements Serializable{
     */
     public void addMonster(Monster input, int index){
         index = index - 2;
-        if(index > 1 && index < 21)
+        if(index > -1 && index < 19)
             table[index] = input;
         monsterNum++;
     }
@@ -95,9 +105,10 @@ public class Table implements Serializable{
     /*
     JavaFX view of the table with options & slider *ooh*
     */
-    public ScrollPane tableView(){
+    public ScrollPane tableView(ArrayList<Monster> monsterList){
         //For each Monster: Index, Add, Remove, Edit, Make Unique
         VBox innerPane = new VBox();
+        tableView.setContent(null);
         for(int i = 0; i < 19; i++){
             final int temp = i + 2;
             boolean isNull = false;
@@ -112,24 +123,23 @@ public class Table implements Serializable{
             Label index = new Label(Integer.toString(temp) + '\t');
             Button add = new Button("Add");
             add.setOnAction(e -> {
-                Monster t = new Monster();
-                t.editMonster();
-                addMonster(t, temp-2);
-                tableView();
+                Monster t = monsterSelector(monsterList);
+                addMonster(t, temp);
+                tableView(monsterList);
             });
             HBox row = new HBox(index, mName, add);
             if (!isNull){
                 Button remove = new Button("Remove");
                 remove.setOnAction(e -> {
-                    removeMonster(temp-2);
-                    tableView();
+                    removeMonster(temp);
+                    tableView(monsterList);
                 });
                 
                 Button edit = new Button("Edit");
                 edit.setOnAction(e -> {
                     Monster t = getMonster(temp);
                     t.editMonster();
-                    tableView();
+                    tableView(monsterList);
                 });
                 row.getChildren().addAll(edit, remove);
             }
@@ -137,7 +147,27 @@ public class Table implements Serializable{
             innerPane.getChildren().addAll(row);
         }
         
-        ScrollPane viewer = new ScrollPane(innerPane);
-        return viewer;
+        tableView.setContent(innerPane);
+        return tableView;
+    }
+    
+    private Monster monsterSelector(ArrayList<Monster> monsterList){
+        Stage newStage = new Stage();
+        VBox main = new VBox();
+        monsterList.stream().map((monster) -> {
+            Button temp = new Button(monster.getName());
+            temp.setOnAction(e -> {
+                selectedMonster = monster;
+                newStage.close();
+            });
+            return temp;
+        }).forEachOrdered((temp) -> {
+            main.getChildren().add(temp);
+        });
+        Scene scene = new Scene(main);
+        scene.getStylesheets().add(this.getClass().getResource("NiceEncounter.css").toExternalForm());
+        newStage.setScene(scene);
+        newStage.showAndWait();
+        return selectedMonster;
     }
 }

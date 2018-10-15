@@ -36,7 +36,7 @@ public class EncounterTables extends Application {
         });
         Button tableView = new Button("Tables");
         tableView.setOnAction(e ->{
-            TableView table = new TableView(tableList, changing);
+            TableView table = new TableView(tableList, changing, monsterDex);
             table.render();
         });
         Button monsterList = new Button("MonsterDex");
