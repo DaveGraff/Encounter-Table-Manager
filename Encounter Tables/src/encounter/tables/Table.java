@@ -191,4 +191,9 @@ public class Table implements Serializable{
         newStage.showAndWait();
         return selectedMonster;
     }
+    
+    @Override
+    public String toString(){
+        return name;
+    }
 }

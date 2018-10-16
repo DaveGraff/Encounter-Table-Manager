@@ -10,8 +10,10 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import javafx.application.Application;
+import javafx.collections.FXCollections;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.VBox;
@@ -24,11 +26,12 @@ import javafx.stage.Stage;
 public class EncounterTables extends Application {
     ArrayList<Monster> monsterDex; //import later
     ArrayList<Table> tableList;    //import later 
-    VBox changing = render();
+    VBox changing;
     
     @Override
     public void start(Stage primaryStage) {
         loadFromFile();
+        changing = render();
         Button main = new Button("Main");
         main.setOnAction(e -> {
             changing.getChildren().clear();
@@ -66,10 +69,12 @@ public class EncounterTables extends Application {
     Renders the main page
     */
     private VBox render(){
+        ComboBox<Table> pickTable = new ComboBox<>(FXCollections.observableList(tableList));
+                
         Button roll = new Button("Roll!");
         TextArea result = new TextArea();
         result.setDisable(true);
-        VBox test = new VBox(roll, result);
+        VBox test = new VBox(pickTable, roll, result);
         return test;
     }
     
