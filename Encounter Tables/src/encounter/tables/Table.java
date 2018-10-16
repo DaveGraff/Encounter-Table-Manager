@@ -5,6 +5,10 @@
  */
 package encounter.tables;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Random;
@@ -24,7 +28,6 @@ public class Table implements Serializable{
     private String name = null;
     private Monster[] table;
     private int monsterNum;//number of monsters currently in the table 
-    private ScrollPane tableView = new ScrollPane();
     private Monster selectedMonster = null;
     
     public Table(String n){
@@ -37,6 +40,23 @@ public class Table implements Serializable{
         table = new Monster[19];
         monsterNum = 0;
     }
+    
+    public Table deepCopy(){
+        try{
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream writer = new ObjectOutputStream(baos);
+            writer.writeObject(this);
+            
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream reader = new ObjectInputStream(bais);
+            return (Table) reader.readObject();
+        } catch(Exception e){return null;}
+    }
+    
+    public Monster[] getMonsterList(){return table;}
+    public void setMonsterList(Monster[] m){table = m;}
+    public int getMonsterNum(){return monsterNum;}
+    public void setMonsterNum(int i){monsterNum = i;}
     
     //Getters & setters
     public String getName(){
@@ -105,7 +125,7 @@ public class Table implements Serializable{
     /*
     JavaFX view of the table with options & slider *ooh*
     */
-    public ScrollPane tableView(ArrayList<Monster> monsterList){
+    public ScrollPane tableView(ArrayList<Monster> monsterList, ScrollPane tableView){
         //For each Monster: Index, Add, Remove, Edit, Make Unique
         VBox innerPane = new VBox();
         tableView.setContent(null);
@@ -125,21 +145,21 @@ public class Table implements Serializable{
             add.setOnAction(e -> {
                 Monster t = monsterSelector(monsterList);
                 addMonster(t, temp);
-                tableView(monsterList);
+                tableView(monsterList, tableView);
             });
             HBox row = new HBox(index, mName, add);
             if (!isNull){
                 Button remove = new Button("Remove");
                 remove.setOnAction(e -> {
                     removeMonster(temp);
-                    tableView(monsterList);
+                    tableView(monsterList, tableView);
                 });
                 
                 Button edit = new Button("Edit");
                 edit.setOnAction(e -> {
                     Monster t = getMonster(temp);
                     t.editMonster();
-                    tableView(monsterList);
+                    tableView(monsterList, tableView);
                 });
                 row.getChildren().addAll(edit, remove);
             }
@@ -148,6 +168,7 @@ public class Table implements Serializable{
         }
         
         tableView.setContent(innerPane);
+        tableView.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
         return tableView;
     }
     

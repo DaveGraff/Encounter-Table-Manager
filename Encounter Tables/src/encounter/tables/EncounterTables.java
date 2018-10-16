@@ -96,6 +96,5 @@ public class EncounterTables extends Application {
         } catch(Exception e){
             tableList = new ArrayList<>();
         }
-        
     }
 }

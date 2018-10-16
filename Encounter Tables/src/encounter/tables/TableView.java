@@ -67,11 +67,12 @@ public class TableView {
     Bring up separate edit window
     */
     private void edit(Table table){
-        final Table backup = table; //In case of cancel
+        final Table backup = table.deepCopy(); //In case of cancel
         
         Stage viewStage = new Stage();
         viewStage.setTitle(table.getName());
-        ScrollPane pane = table.tableView(monsters);
+        ScrollPane pane = new ScrollPane();
+        pane = table.tableView(monsters, pane);
         pane.setMaxHeight(500);
         pane.setMinWidth(350);
         
@@ -84,7 +85,8 @@ public class TableView {
         Button cancel = new Button("Cancel");cancel.setCancelButton(true);
         cancel.setOnAction(e -> {
             viewStage.close();
-            
+            table.setMonsterList(backup.getMonsterList());
+            table.setMonsterNum(backup.getMonsterNum());
         });
         ToolBar toolbar = new ToolBar(save, cancel);
         VBox container = new VBox(pane, toolbar);
@@ -145,7 +147,7 @@ public class TableView {
         try{
             FileOutputStream fos = new FileOutputStream(new File("Tables.txt"));
             ObjectOutputStream writer = new ObjectOutputStream(fos);
-            
+                        
             writer.writeObject(tables);
             
             writer.close();
