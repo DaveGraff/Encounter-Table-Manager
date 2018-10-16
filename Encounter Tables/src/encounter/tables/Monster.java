@@ -97,7 +97,7 @@ public class Monster implements Serializable{
     public String rollMonster(){
         String data = "".concat(name + "\n");
         int appearing = numSet(numDice, numDiceRoll, numMod);
-        String hp = "";
+        String hp = "HP: ";
         for(int i = 0; i < appearing; i++){
             if(specialHP == -1)
                 hp = hp.concat(" " + Integer.toString(numSet(hpNum, hpDice, hpMod)));

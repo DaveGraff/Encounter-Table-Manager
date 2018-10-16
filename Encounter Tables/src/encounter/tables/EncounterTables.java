@@ -27,6 +27,7 @@ public class EncounterTables extends Application {
     ArrayList<Monster> monsterDex; //import later
     ArrayList<Table> tableList;    //import later 
     VBox changing;
+    Table selectedTable = null;
     
     @Override
     public void start(Stage primaryStage) {
@@ -69,15 +70,32 @@ public class EncounterTables extends Application {
     Renders the main page
     */
     private VBox render(){
-        ComboBox<Table> pickTable = new ComboBox<>(FXCollections.observableList(tableList));
+        ArrayList<Table> notEmpty = new ArrayList<>();
+        tableList.forEach(e -> {
+            if(!(e.getMonsterNum() < 1))
+                notEmpty.add(e);
+        });
+        ComboBox<Table> pickTable = new ComboBox<>(FXCollections.observableList(notEmpty));
                 
         Button roll = new Button("Roll!");
         TextArea result = new TextArea();
         result.setDisable(true);
+        roll.setOnAction(e -> {
+            selectedTable = pickTable.getSelectionModel().getSelectedItem();
+            if (selectedTable != null){
+                Monster selected = selectedTable.executeRoll();
+                result.setText(selected.rollMonster());
+            }
+        });
         VBox test = new VBox(pickTable, roll, result);
         return test;
     }
     
+    /*
+    Loads monsterDex and TableList from their
+    respective files. Returns an empty ArrayList
+    if nothing is found
+    */
     private void loadFromFile(){
         FileInputStream fis;
         ObjectInputStream reader;
