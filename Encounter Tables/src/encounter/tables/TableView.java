@@ -121,6 +121,10 @@ public class TableView {
         }
     }
     
+    /*
+    Function to set or change the current name
+    of a table
+    */
     private String changeName(Table table){
         Stage newStage = new Stage();
         String currentName;
@@ -143,6 +147,10 @@ public class TableView {
         return table.getName();
     }
     
+    /*
+    Saves the ArrayList of tables to
+    a text file 'Tables.txt'
+    */
     private void save(){
         try{
             FileOutputStream fos = new FileOutputStream(new File("Tables.txt"));

@@ -11,6 +11,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.ToolBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -30,6 +31,7 @@ public class MonsterPage {
     
     public VBox render(){
         thisPage.getChildren().clear();
+        VBox monsters = new VBox();
         monsterList.forEach(e -> {
             Label name = new Label(e.getName());
             Button edit = new Button("Edit");
@@ -43,14 +45,14 @@ public class MonsterPage {
                 render();
             });
             HBox row = new HBox(name, edit, remove);
-            thisPage.getChildren().add(row);
+            monsters.getChildren().add(row);
         });
         Button add = new Button("Add Monster");
         add.setOnAction(e -> {
             addMonster();
             render();});
         ToolBar toolbar = new ToolBar(add);
-        thisPage.getChildren().add(toolbar);
+        thisPage.getChildren().addAll(new ScrollPane(monsters), toolbar);
         return thisPage;
     }
     
