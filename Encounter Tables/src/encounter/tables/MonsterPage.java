@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+Dave Graff 2018
  */
 package encounter.tables;
 
@@ -63,7 +61,10 @@ public class MonsterPage {
     Edits the stats of a given monster, saves after
     */
     public void editMonster(Monster m){
+        String name = m.getName();
         m.editMonster();
+        if(m.getName() == null)
+            m.setName(name);
     }
     
     /*
@@ -82,8 +83,10 @@ public class MonsterPage {
     public void addMonster(){
         Monster temp = new Monster();
         temp.editMonster();
-        monsterList.add(temp);
-        save();
+        if(temp.getName() != null){
+            monsterList.add(temp);
+            save();
+        }
     }
     
     private void save(){

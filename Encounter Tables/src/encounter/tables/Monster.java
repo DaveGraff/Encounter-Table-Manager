@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+Dave Graff 2018
  */
 package encounter.tables;
 
@@ -117,7 +115,7 @@ public class Monster implements Serializable{
     Creates screen to create and edit monsters
     A new monster should be created first, and then edited
     */
-    public void editMonster(){
+    public String editMonster(){
         Stage editStage = new Stage();
         editStage.setTitle("Edit Monster: " + name);
         TextField nameField = new TextField(name); nameField.setMaxWidth(200);
@@ -140,7 +138,10 @@ public class Monster implements Serializable{
         fields.getChildren().add(descriptionField);
         
         Button cancel = new Button("Cancel");cancel.setCancelButton(true);
-        cancel.setOnAction(e -> editStage.close());
+        cancel.setOnAction(e -> {
+            editStage.close();
+            name = null;
+        });
         Button save = new Button("Save");save.setDefaultButton(true);
         save.setOnAction(e -> {
             try{
@@ -172,6 +173,7 @@ public class Monster implements Serializable{
         scene.getStylesheets().add(this.getClass().getResource("NiceEncounter.css").toExternalForm());
         editStage.setScene(scene);
         editStage.showAndWait();
+        return name;
     }
     
     public Monster deepCopy(){

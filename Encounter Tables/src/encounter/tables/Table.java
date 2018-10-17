@@ -1,7 +1,5 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+Dave Graff 2018
  */
 package encounter.tables;
 
@@ -162,10 +160,14 @@ public class Table implements Serializable{
                 Button edit = new Button("Edit");
                 edit.setOnAction(e -> {
                     Monster t = getMonster(temp);
+                    String name = t.getName();
                     t.editMonster();
+                    if(t.getName() == null)
+                        t.setName(name);
                     tableView(monsterList, tableView);
                 });
                 row.getChildren().addAll(edit, remove);
+                row.getChildren().remove(add);
             }
             //Implement make unique later?
             innerPane.getChildren().addAll(row);
