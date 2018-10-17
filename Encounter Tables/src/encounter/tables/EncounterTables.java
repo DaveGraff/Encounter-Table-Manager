@@ -79,7 +79,6 @@ public class EncounterTables extends Application {
                 
         Button roll = new Button("Roll!");
         TextArea result = new TextArea();
-        result.setDisable(true);
         roll.setOnAction(e -> {
             selectedTable = pickTable.getSelectionModel().getSelectedItem();
             if (selectedTable != null){

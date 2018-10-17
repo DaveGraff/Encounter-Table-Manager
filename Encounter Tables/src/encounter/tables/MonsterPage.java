@@ -34,10 +34,13 @@ public class MonsterPage {
         VBox monsters = new VBox();
         monsterList.forEach(e -> {
             Label name = new Label(e.getName());
+            name.setText(name.getText() + "\t\t\t");
+            name.setMaxWidth(100);
             Button edit = new Button("Edit");
             edit.setOnAction(x -> {
                 editMonster(e);
                 render();
+                save();
             });
             Button remove = new Button("Remove");
             remove.setOnAction(x ->{

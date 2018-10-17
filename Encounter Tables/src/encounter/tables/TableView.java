@@ -41,6 +41,8 @@ public class TableView {
         thisPage.getChildren().clear();
         for(Table table: tables){
             Label name = new Label(table.getName());
+            name.setMaxWidth(100);
+            name.setText(name.getText() + "\t\t\t");
             Button changeName = new Button("Change Name");
             changeName.setOnAction(e -> {
                 changeName(table);

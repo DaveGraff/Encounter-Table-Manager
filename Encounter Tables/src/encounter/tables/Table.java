@@ -16,6 +16,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.ToolBar;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -102,7 +103,7 @@ public class Table implements Serializable{
     public void addMonster(Monster input, int index){
         index = index - 2;
         if(index > -1 && index < 19)
-            table[index] = input;
+            table[index] = input.deepCopy();
         monsterNum++;
     }
     
@@ -139,13 +140,16 @@ public class Table implements Serializable{
                 mName = new Label("EMPTY");
             else
                 mName = new Label(table[i].getName());
-            mName.setText(mName.getText() + "\t");//Makes spacing nicer
+            mName.setMaxWidth(100);
+            mName.setText(mName.getText() + "\t\t\t");//Makes spacing nicer
             Label index = new Label(Integer.toString(temp) + '\t');
             Button add = new Button("Add");
             add.setOnAction(e -> {
                 Monster t = monsterSelector(monsterList);
-                addMonster(t, temp);
-                tableView(monsterList, tableView);
+                if(t != null){
+                    addMonster(t, temp);
+                    tableView(monsterList, tableView);
+                }
             });
             HBox row = new HBox(index, mName, add);
             if (!isNull){
@@ -174,7 +178,7 @@ public class Table implements Serializable{
     
     private Monster monsterSelector(ArrayList<Monster> monsterList){
         Stage newStage = new Stage();
-        VBox main = new VBox();
+        VBox inner = new VBox();
         monsterList.stream().map((monster) -> {
             Button temp = new Button(monster.getName());
             temp.setOnAction(e -> {
@@ -183,9 +187,18 @@ public class Table implements Serializable{
             });
             return temp;
         }).forEachOrdered((temp) -> {
-            main.getChildren().add(temp);
+            inner.getChildren().add(temp);
         });
-        Scene scene = new Scene(main);
+        ScrollPane pane = new ScrollPane(inner);
+        pane.setMinWidth(250);
+        pane.setMinHeight(400);
+        Button cancel = new Button("Cancel");cancel.setCancelButton(true);
+        cancel.setOnAction(e -> {
+            selectedMonster = null;
+            newStage.close();
+        });
+        ToolBar toolbar = new ToolBar(cancel);
+        Scene scene = new Scene(new VBox(pane, toolbar));
         scene.getStylesheets().add(this.getClass().getResource("NiceEncounter.css").toExternalForm());
         newStage.setScene(scene);
         newStage.showAndWait();

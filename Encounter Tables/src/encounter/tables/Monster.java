@@ -5,6 +5,10 @@
  */
 package encounter.tables;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Random;
 import javafx.scene.Scene;
@@ -97,10 +101,11 @@ public class Monster implements Serializable{
     public String rollMonster(){
         String data = "".concat(name + "\n");
         int appearing = numSet(numDice, numDiceRoll, numMod);
+        data = data.concat(appearing + " Appearing\n");
         String hp = "HP: ";
         for(int i = 0; i < appearing; i++){
             if(specialHP == -1)
-                hp = hp.concat(" " + Integer.toString(numSet(hpNum, hpDice, hpMod)));
+                hp = hp.concat(" (" + Integer.toString(numSet(hpNum, hpDice, hpMod)) + ")");
             else hp = Integer.toString(specialHP);
         }
         data = data.concat(hp + "\n");
@@ -167,5 +172,17 @@ public class Monster implements Serializable{
         scene.getStylesheets().add(this.getClass().getResource("NiceEncounter.css").toExternalForm());
         editStage.setScene(scene);
         editStage.showAndWait();
+    }
+    
+    public Monster deepCopy(){
+        try{
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            ObjectOutputStream writer = new ObjectOutputStream(baos);
+            writer.writeObject(this);
+            
+            ByteArrayInputStream bais = new ByteArrayInputStream(baos.toByteArray());
+            ObjectInputStream reader = new ObjectInputStream(bais);
+            return (Monster) reader.readObject();
+        } catch(Exception e){return null;}
     }
 }
