@@ -106,7 +106,7 @@ public class Monster implements Serializable{
         for(int i = 0; i < appearing; i++){
             if(specialHP == -1)
                 hp = hp.concat(" (" + Integer.toString(numSet(hpNum, hpDice, hpMod)) + ")");
-            else hp = Integer.toString(specialHP);
+            else hp = hp.concat(" (" + Integer.toString(specialHP) + ")");
         }
         data = data.concat(hp + "\n");
         data = data.concat(description);
